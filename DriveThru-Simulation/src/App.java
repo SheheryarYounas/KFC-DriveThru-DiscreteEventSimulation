@@ -1,11 +1,11 @@
 import java.util.Scanner;
 import org.apache.commons.math3.distribution.PoissonDistribution;
+import java.util.LinkedList;
 
 public class App {
     public static void main(String[] args) throws Exception {
 
         Scanner input = new Scanner(System.in);
-
 
         System.out.println("Welcome to the KFC Drive Thru Simulation!");
         System.out.println("This is a discrete event simulation of a KFC Drive Thru.");
@@ -17,9 +17,8 @@ public class App {
         System.out.println("Please enter the average arrival rate of customers per minute.");
         int arrivalRate = input.nextInt();
 
-        PoissonDistribution poisson = new PoissonDistribution(1 / arrivalRate);
-        
-        
+        Simulation simulation = new Simulation(simulationTime, arrivalRate);
+               
 
     }
 }
