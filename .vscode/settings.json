@@ -1,0 +1,11 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "DriveThru-Simulation/lib/commons-math3-3.6.1.jar",
+        "DriveThru-Simulation/lib/commons-math3-3.6.1-javadoc.jar",
+        "DriveThru-Simulation/lib/commons-math3-3.6.1-sources.jar",
+        "DriveThru-Simulation/lib/commons-math3-3.6.1-tests.jar",
+        "DriveThru-Simulation/lib/commons-math3-3.6.1-test-sources.jar",
+        "DriveThru-Simulation/lib/commons-math3-3.6.1-tools.jar"
+    ]
+}

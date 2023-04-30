@@ -1,0 +1,41 @@
+1. First, I am setting up a discrete event simulation as the assignment wants discrete events.
+2. I will ask the user how long they want to run the simulation for.
+3. Then, I need the average arrival rate. For now, I will assume the user is an expert and can provide an accurate estimate of the 
+average arrival rate. I will ask the user for the average arrival rate.
+4. Alright, above tasks are done.
+5. Now that I have the average arrival rate, I will use poisson distribution to generate the arrival times. The poisson distribution
+is used to help us simulate when each customer will arrive. I will use the average arrival rate as the lambda value for the
+poisson. So, in the end, this will give us a list of random arrival times for each customer in a realistic way.
+6. Why use poisson and not any other distribution? Well, first, as discussed, poisson is used to simulate and predict arrival times
+and we need to do this for our drive-thru. Second, poisson is a discrete distribution and we are using discrete events. Third, 
+poisson assumes that each event occurs independently of the other events. This is true for our drive-thru. This is because arrival of one
+car does not affect the arrival of another car. 
+7. I am gonna use a java library to use poisson distribution to generate the arrival times. I will use the apache commons math library.
+8. Alright, I will start implementing. Brb.
+9. I am back. I cannot directly import the apache library into my project. Gonna download it first.
+10. To download the library, use https://commons.apache.org/proper/commons-math/
+11. I downloaded the binary zip file. It is version 4.0 Beta. Guess I will use this version.
+12. Just made a folder in C drive and called it Java Downloaded Libaries. In the future, I will add all downloaded libraries here.
+13. Alright, so apparently for VS code, I need to add the jar files to lib folder. I already have this here. So I will just add to that.
+14. Alright, added the jar files. Let's see if the import statement now works.
+15. Usually, version 3 is imported but since mine is 4.0 beta 1, I wanna import that because maybe I'm stupid and willing to 
+take the risk. To import, use import org.apache.commons.math4.distribution.PoissonDistribution;
+16. Not as simple as that. First suggestion is to make a pom.xml file to add the dependency. I don't know what that is. Let's see.
+17. Alright, we ignore point 16. The jar files are enough and now I need to tell VS code where to find the jar files.
+18. Added lines 7-9 in settings.json in .vscode folder. 
+19. NOTHINGS WORKING. How do I import this now? Time to ask Bing AI. 
+20. Alright, create new file in project called module-info.java. Add the following code to it:
+21. requires org.apache.commons.math4;
+22. Click on Java Build Path by right clicking on project and then clicking properties. Then, Add external jars.
+23. This is what Bing AI said. Let's see if it works.
+24. Why am I stuck on this problem? It has been 30 minutes and I cannot seem to import it. Let's find a youtube video.
+25. The 2 Minute YouTube video solved it!!!!!!!!!!!!!!!!!!!! Liked the video for future.
+26. So just go to Java Projects on bottom left and go to referenced libraries. Add jar files there. 
+27. I will keep the JAR files here and not just get it from my C drive because maybe problems may occur if TA or teacher runs this.
+28. Math 4 is not working. I simply cannot determine how to get poisson distribution from it or if it even exists in this version.
+It does probably exist but I cannot find the syntax anywhere on the internet. I will use Math 3.
+29. Adding math 3 jar files to project.
+30. Alright, now it worked. Poisson will give inter-arrival times. Meaning the time between each arrival of car or customer.
+31. We used 1 / ArrivalRate as we want the units to be time / customer in order to get the inter-arrival times.
+32. Alright, taking a break, just getting to this point took so long and fried my brain. I will continue later.
+
