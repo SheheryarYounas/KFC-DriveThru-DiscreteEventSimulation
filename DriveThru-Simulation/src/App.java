@@ -44,11 +44,19 @@ public class App {
         LinkedList<Event> eventList;
         eventList = simulation.startSimulation();
         
-        System.out.println("Case ID\t Event ID\t Time Stamp\t Customer ID\t Server ID\t Activity\t");
+        System.out.println("     Event ID\t Case ID\t Time Stamp\t Customer ID\t    Server ID\t            Activity\t");
         for (int i = 0; i < eventList.size(); i++)
         {
-            System.out.println(eventList.get(i).getCaseID() + "\t" + eventList.get(i).getEventID() + "\t" + eventList.get(i).getTimestamp() + "\t" + eventList.get(i).getCustomerID() + "\t" + eventList.get(i).getServerID() + "\t" + eventList.get(i).getActivity());
+            if (eventList.get(i).getTimestamp() < 10)
+            {
+                System.out.println("\t" + eventList.get(i).getEventID() + "\t     " + eventList.get(i).getCaseID() + "\t            " + eventList.get(i).getTimestamp() + "\t               " + eventList.get(i).getCustomerID() + "\t\t" + eventList.get(i).getServerID() + "\t\t" + eventList.get(i).getActivity());
+            }
+            else
+            {
+                System.out.println("\t" + eventList.get(i).getEventID() + "\t     " + eventList.get(i).getCaseID() + "\t            " + eventList.get(i).getTimestamp() + "\t       " + eventList.get(i).getCustomerID() + "\t\t" + eventList.get(i).getServerID() + "\t\t" + eventList.get(i).getActivity());
+            }
         }
+
                
 
     }

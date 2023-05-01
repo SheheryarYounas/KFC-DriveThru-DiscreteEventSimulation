@@ -25,7 +25,7 @@ public class Simulation {
         this.line_for_cashier = new LinkedList<Customer>();
         this.line_for_order_handoff = new LinkedList<Customer>();
         this.eventList = new LinkedList<Event>();
-        this.assign_customer_id = 0;
+        this.assign_customer_id = 1;
         this.currentTime = 0;
         this.servers = servers;
         this.eventID = 1;
@@ -205,7 +205,7 @@ public class Simulation {
         {
             if (currentTime >= customer_arrival_time)
             {
-                Customer customer = new Customer(currentTime, 0, 0, assign_customer_id);
+                Customer customer = new Customer(currentTime, 0, 0, assign_customer_id++);
                 //current time here is arrival time of customer, record this later
                 AddCarToLine(customer);
                 recordEvent(customer.getID(), eventID++, currentTime, customer.getID(), 0, "Customer arrives at drive thru");
