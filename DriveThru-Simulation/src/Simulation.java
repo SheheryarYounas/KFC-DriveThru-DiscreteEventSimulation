@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 public class Simulation {
     private float simulationTime;
-    private int arrivalRate;
+    private float arrivalRate;
     private PoissonDistribution poisson;
     private Queue<Customer> line_for_order_taker;
     private Queue<Customer> line_for_cashier;
@@ -17,7 +17,7 @@ public class Simulation {
     private int orderID;
     private LinkedList<Order> orderList;
 
-    public Simulation(float simulationTime, int arrivalRate, LinkedList<Server> servers) {
+    public Simulation(float simulationTime, float arrivalRate, LinkedList<Server> servers) {
         this.simulationTime = simulationTime;
         this.arrivalRate = arrivalRate;
         this.poisson = new PoissonDistribution(arrivalRate);
@@ -36,7 +36,7 @@ public class Simulation {
         return simulationTime;
     }
 
-    public int getArrivalRate() {
+    public float getArrivalRate() {
         return arrivalRate;
     }
 
