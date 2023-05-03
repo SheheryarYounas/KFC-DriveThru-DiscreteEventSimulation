@@ -87,4 +87,6 @@ handoff window.
 exactly in order, what I am gonna do is that regardless of whenever the order is ready, I am going to just sort the event log in the end.
 It's a simple spell but quite unbreakable. I am doing this assignment alone and the budget is 0$. So unless someone pays me, this
 will work.
+63. No idea why you would read this entire thing, anyways I did this in like 2 days non-stop. Feel like I could give every simulation
+program a run for their money when my budget increases from 0$ and time from few days to months.
 

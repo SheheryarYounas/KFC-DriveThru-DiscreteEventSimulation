@@ -1,7 +1,3 @@
-1. Record customer actions and present it as event log.
-2. Allow user to increment the time by his/her choice.
-3. Custom number of servers.
-4. Integrate child classes for server.
-5. Add all service times for customer.
-6. Reconsider if server must be assigned a customer in server class.
-7. Use historical data for average rates.
+For future development maybe:
+1. Custom number of servers.
+2. Integrate child classes for server.

@@ -144,12 +144,12 @@ public class Customer {
     }
 
     public void setID(int ID) {
-        ID = ID;
+        this.ID = ID;
     }
 
     public void calculateServiceTime()
     {
-        this.serviceTime = (this.serviceTime_end_order_taker - this.serviceTime_start_order_taker) + (this.serviceTime_start_cashier - this.serviceTime_end_cashier) + (this.serviceTime_end_order_handoff - this.serviceTime_start_order_handoff);
+        this.serviceTime = (this.serviceTime_end_order_taker - this.serviceTime_start_order_taker) + (this.serviceTime_end_cashier - this.serviceTime_start_cashier) + (this.serviceTime_end_order_handoff - this.serviceTime_start_order_handoff);
     }
 
     

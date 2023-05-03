@@ -43,6 +43,8 @@ public class App {
 
         LinkedList<Event> eventList;
         eventList = simulation.startSimulation();
+
+        eventList = SortByTimeStamp(eventList);
         
         System.out.println("     Event ID\t Case ID\t Time Stamp\t Customer ID\t    Server ID\t            Activity\t");
         for (int i = 0; i < eventList.size(); i++)
@@ -57,7 +59,76 @@ public class App {
             }
         }
 
-               
+        System.out.println("Simulation is Complete!");
+        System.out.println("Here are arrival times, service times, and departure times for each customer.");
+        System.out.println("     Customer ID\t Arrival Time\t Service Time\t Departure Time\t Waiting Time\t");
+        LinkedList <Customer> customerList = simulation.getCustomerList();
 
+        for (int i = 0; i < customerList.size(); i++)
+        {
+            if (customerList.get(i).getArrivalTime() < 10)
+            {
+                if (customerList.get(i).getServiceTime() == 0)
+                {
+                    customerList.get(i).calculateServiceTime(); //Some people do not get to receive order, so this function is never called, so I will call it here
+                }
+
+                if (customerList.get(i).getWaitTime() == 0)
+                {
+                    customerList.get(i).calculateWaitTime(); //Some people do not get to receive order, so this function is never called, so I will call it here
+                }
+
+                if (customerList.get(i).getWaitTime() <= 0)
+                {
+                    System.out.println("\t" + customerList.get(i).getID() + "\t\t    " + customerList.get(i).getArrivalTime() + "\t\t" + customerList.get(i).getServiceTime() + "\t\t" + customerList.get(i).getDepartureTime() + "\t\t" + customerList.get(i).getWaitTime() + " (Simulation ended before departure could happen)");
+                }
+                else
+                {
+                    System.out.println("\t" + customerList.get(i).getID() + "\t\t    " + customerList.get(i).getArrivalTime() + "\t\t" + customerList.get(i).getServiceTime() + "\t\t" + customerList.get(i).getDepartureTime() + "\t\t" + customerList.get(i).getWaitTime());
+                }
+            }
+            else
+            {
+                if (customerList.get(i).getServiceTime() == 0)
+                {
+                    customerList.get(i).calculateServiceTime(); //Some people do not get to receive order, so this function is never called, so I will call it here
+                }
+
+                if (customerList.get(i).getWaitTime() == 0)
+                {
+                    customerList.get(i).calculateWaitTime(); //Some people do not get to receive order, so this function is never called, so I will call it here
+                }
+
+                if (customerList.get(i).getWaitTime() <= 0)
+                {
+                    System.out.println("\t" + customerList.get(i).getID() + "\t\t" + customerList.get(i).getArrivalTime() + "\t\t       " + customerList.get(i).getServiceTime() + "\t\t" + customerList.get(i).getDepartureTime() + "\t\t" + customerList.get(i).getWaitTime() + " (Simulation ended before departure could happen)");
+                }
+
+                else
+                {
+                    System.out.println("\t" + customerList.get(i).getID() + "\t\t" + customerList.get(i).getArrivalTime() + "\t\t       " + customerList.get(i).getServiceTime() + "\t\t" + customerList.get(i).getDepartureTime() + "\t\t" + customerList.get(i).getWaitTime());
+                }
+            }
+        }
+            
+    }
+
+    public static LinkedList<Event> SortByTimeStamp(LinkedList<Event> eventList)
+    {
+        for (int i = 0; i < eventList.size(); i++)
+        {
+            for (int j = 0; j < eventList.size() - 1; j++)
+            {
+                if (eventList.get(j).getTimestamp() > eventList.get(j + 1).getTimestamp())
+                {
+                    Event temp = eventList.get(j);
+                    eventList.set(j, eventList.get(j + 1));
+                    eventList.set(j + 1, temp);
+                }
+            }
+            eventList.get(i).setEventID(i + 1);
+        }
+
+        return eventList;
     }
 }

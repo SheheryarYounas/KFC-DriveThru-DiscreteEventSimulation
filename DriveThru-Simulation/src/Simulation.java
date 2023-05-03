@@ -16,6 +16,10 @@ public class Simulation {
     private int eventID;
     private int orderID;
     private LinkedList<Order> orderList;
+    private float time1;
+    private float time2;
+    private float time3;
+    private LinkedList<Customer> customerList;
 
     public Simulation(float simulationTime, float arrivalRate, LinkedList<Server> servers) {
         this.simulationTime = simulationTime;
@@ -30,6 +34,10 @@ public class Simulation {
         this.servers = servers;
         this.eventID = 1;
         this.orderList = new LinkedList<Order>();
+        this.customerList = new LinkedList<Customer>();
+        this.time1 = 0;
+        this.time2 = 0;
+        this.time3 = 0;
     }
 
     public float getSimulationTime() {
@@ -78,7 +86,9 @@ public class Simulation {
     public void confirmOrder(int orderID, int customerID)
     {
         currentTime = currentTime + 10; //Lets assume just confirming and letting the chef start to cook takes 10 seconds
-        Order order = new Order(orderID, customerID, currentTime + getChefServiceTime());
+        time1 = time1 + 10;
+        Order order = new Order(orderID, customerID, time1 + getChefServiceTime());
+        orderList.add(order);
     }
 
     public boolean isOrderReady(int customerID)
@@ -87,6 +97,7 @@ public class Simulation {
         {
             if (orderList.get(i).getCustomerID() == customerID)
             {
+                
                 if (currentTime >= orderList.get(i).getFinishTime())
                 {
                     return true;
@@ -110,6 +121,21 @@ public class Simulation {
         return -1;
     }
 
+    public void AddCustomerWhileWork(float currentTime1)
+    {
+        float inter_arrival_time = calculateInterArrivalTime();
+        float customer_arrival_time = currentTime1 + inter_arrival_time;
+
+        if (customer_arrival_time <= simulationTime)
+        {
+            int customer_id = assign_customer_id;
+            Customer customer = new Customer(currentTime1, 0, 0, assign_customer_id++);
+            AddCarToLine(customer);
+            customerList.add(customer);
+            recordEvent(customer_id, eventID++, currentTime1, customer_id, 0, "Customer arrives at the drive-thru");
+        }
+    }
+
     public void AssignServer() {
         for (int i = 0; i < servers.size(); i++) {
             if (servers.get(i).getIsBusy() == false)
@@ -119,18 +145,30 @@ public class Simulation {
                     if (line_for_order_taker.size() > 0)
                     {
                         Customer customer_to_order = line_for_order_taker.remove();
-                        customer_to_order.setServiceTime_start_order_taker(currentTime);
-                        recordEvent(customer_to_order.getID(), eventID++, currentTime, customer_to_order.getID(), servers.get(i).getId(), "Server starts taking order from customer");
+
+                        time1 = customer_to_order.getArrivalTime() + time1;
+
+                        customer_to_order.setServiceTime_start_order_taker(time1); //
+
+
+                        recordEvent(customer_to_order.getID(), eventID++, time1, customer_to_order.getID(), servers.get(i).getId(), "Server starts taking order from customer");
                         servers.get(i).setIsBusy(true);
+                       
+
                         currentTime = currentTime + servers.get(i).getAverage_service_time();
-                        customer_to_order.setServiceTime_end_order_taker(currentTime);
-                        recordEvent(customer_to_order.getID(), eventID++, currentTime, customer_to_order.getID(), servers.get(i).getId(), "Server finishes taking order from customer");
+
+                        time1 = time1 + servers.get(i).getAverage_service_time();
+
+                        AddCustomerWhileWork(time1);
+                        customer_to_order.setServiceTime_end_order_taker(time1);
+                        recordEvent(customer_to_order.getID(), eventID++, time1, customer_to_order.getID(), servers.get(i).getId(), "Server finishes taking order from customer");
                         customer_to_order.setHasOrdered(true);
                         servers.get(i).setIsBusy(false);
                         line_for_cashier.add(customer_to_order);
 
                         confirmOrder(orderID++, customer_to_order.getID());
-                        recordEvent(customer_to_order.getID(), eventID++, currentTime, customer_to_order.getID(), servers.get(i).getId(), "Chef confirms order and starts cooking");
+                        recordEvent(customer_to_order.getID(), eventID++, time1, customer_to_order.getID(), servers.get(i).getId(), "Chef confirms order and starts cooking");
+
                     }
                 }
 
@@ -138,14 +176,21 @@ public class Simulation {
                 {
                     if (line_for_cashier.size() > 0)
                     {
+                        
                         Customer customer_to_cashier = line_for_cashier.remove();
-                        customer_to_cashier.setServiceTime_start_cashier(currentTime);
+                        currentTime = currentTime + 10;
+                        time2 = customer_to_cashier.getServiceTime_end_order_taker() + time2 + 10;
+                        recordEvent(customer_to_cashier.getID(), eventID++, time2, customer_to_cashier.getID(), servers.get(i).getId(), "Server starts taking payment from customer");
+                        customer_to_cashier.setServiceTime_start_cashier(time2);
                         servers.get(i).setIsBusy(true);
                         currentTime = currentTime + servers.get(i).getAverage_service_time();
-                        customer_to_cashier.setServiceTime_end_cashier(currentTime);
+                        time2 = time2 + servers.get(i).getAverage_service_time();
+                        AddCustomerWhileWork(time2);
+                        customer_to_cashier.setServiceTime_end_cashier(time2);
                         customer_to_cashier.setHasPaid(true);
                         servers.get(i).setIsBusy(false);
                         line_for_order_handoff.add(customer_to_cashier);
+                        recordEvent(customer_to_cashier.getID(), eventID++, time2, customer_to_cashier.getID(), servers.get(i).getId(), "Server finishes taking payment from customer");
                     }
                 }
 
@@ -154,17 +199,25 @@ public class Simulation {
                     if (line_for_order_handoff.size() > 0)
                     {
                         //First, chef needs to complete making the food
-                        Customer customer_to_order_handoff = line_for_order_handoff.remove();
-                        customer_to_order_handoff.setServiceTime_start_order_handoff(currentTime);
+                        
+                        
+                        Customer customer_to_order_handoff = line_for_order_handoff.peek();
+                        currentTime = currentTime + 10;
+                        time3 = customer_to_order_handoff.getServiceTime_end_cashier() + time3 + 10;
+                        customer_to_order_handoff.setServiceTime_start_order_handoff(time3);
                         servers.get(i).setIsBusy(true);
+
+                        
 
                         if (!isOrderReady(customer_to_order_handoff.getID()))
                         {
-                            currentTime = currentTime + calculateTimeLeftForOrder(customer_to_order_handoff.getID()); 
+                            currentTime = currentTime + calculateTimeLeftForOrder(customer_to_order_handoff.getID());
+                            time3 = time3 + calculateTimeLeftForOrder(customer_to_order_handoff.getID());
+                            servers.get(i).setIsBusy(false);
+                            return; 
                         }
 
-                        else
-                        {
+                        
                             float order_timestamp = 0;
                             for (int j = 0; j < orderList.size(); j++)
                             {
@@ -173,17 +226,23 @@ public class Simulation {
                                     order_timestamp = orderList.get(j).getFinishTime();
                                 }
                             }
-                            recordEvent(customer_to_order_handoff.getID(), eventID++, order_timestamp, customer_to_order_handoff.getID(), servers.get(i).getId(), "Chef has finished preparing the food");
-                        }
+                            
+                            recordEvent(customer_to_order_handoff.getID(), eventID++, time3, customer_to_order_handoff.getID(), servers.get(i).getId(), "Chef has finished preparing the food");
+                            AddCustomerWhileWork(time3);
 
+
+                            recordEvent(customer_to_order_handoff.getID(), eventID++, time3, customer_to_order_handoff.getID(), servers.get(i).getId(), "Server hands off the food to the customer");
                         currentTime = currentTime + servers.get(i).getAverage_service_time(); //this is time to just hand off the food
-                        customer_to_order_handoff.setServiceTime_end_order_handoff(currentTime);
+                        time3 = time3 + servers.get(i).getAverage_service_time(); //this is time to just hand off the food
+                        
+                        customer_to_order_handoff.setServiceTime_end_order_handoff(time3);
                         customer_to_order_handoff.setHasCollected(true);
                         servers.get(i).setIsBusy(false);
-                        customer_to_order_handoff.setDepartureTime(currentTime);
+                        customer_to_order_handoff.setDepartureTime(time3);
                         customer_to_order_handoff.calculateServiceTime();
                         customer_to_order_handoff.calculateWaitTime();
-                        recordEvent(customer_to_order_handoff.getID(), eventID++, currentTime, customer_to_order_handoff.getID(), servers.get(i).getId(), "Customer has collected the food and left the drive thru");
+                        recordEvent(customer_to_order_handoff.getID(), eventID++, time3, customer_to_order_handoff.getID(), servers.get(i).getId(), "Customer has collected the food and left the drive thru");
+                        line_for_order_handoff.remove();
                     }
                 }
             }
@@ -196,6 +255,11 @@ public class Simulation {
         eventList.add(event);
     }
 
+    public LinkedList<Customer> getCustomerList()
+    {
+        return customerList;
+    }
+
     public LinkedList<Event> startSimulation()
     {
         float inter_arrival_time = calculateInterArrivalTime();
@@ -206,10 +270,9 @@ public class Simulation {
             if (currentTime >= customer_arrival_time)
             {
                 Customer customer = new Customer(currentTime, 0, 0, assign_customer_id++);
-                //current time here is arrival time of customer, record this later
                 AddCarToLine(customer);
-                recordEvent(customer.getID(), eventID++, currentTime, customer.getID(), 0, "Customer arrives at drive thru");
-                assign_customer_id++;
+                customerList.add(customer);
+                recordEvent(customer.getID(), eventID++, currentTime, customer.getID(), 0, "Customer arrives at the drive thru");
                 inter_arrival_time = calculateInterArrivalTime();
                 customer_arrival_time = currentTime + inter_arrival_time;
             }
